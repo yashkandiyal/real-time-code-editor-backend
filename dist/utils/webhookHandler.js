@@ -3,12 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.webhookHandler = void 0;
 const svix_1 = require("svix");
-const body_parser_1 = __importDefault(require("body-parser"));
 const env_1 = require("../config/env");
-const __1 = __importDefault(require(".."));
-const user_model_1 = __importDefault(require("../models/user.model")); // Import the User model
-__1.default.post("/api/webhooks", body_parser_1.default.raw({ type: "application/json" }), async function (req, res) {
+const user_model_1 = __importDefault(require("../models/user.model"));
+const webhookHandler = async (req, res) => {
     if (!env_1.WEBHOOK_SECRET) {
         throw new Error("You need a WEBHOOK_SECRET in your .env");
     }
@@ -36,7 +35,7 @@ __1.default.post("/api/webhooks", body_parser_1.default.raw({ type: "application
         return res.status(400).json({ success: false, message: err.message });
     }
     const { id, email_addresses, first_name, last_name, image_url } = evt.data;
-    const email = email_addresses[0].email_address; // Adjust according to your event data structure
+    const email = email_addresses[0].email_address;
     const eventType = evt.type;
     if (eventType === "user.created") {
         try {
@@ -54,5 +53,6 @@ __1.default.post("/api/webhooks", body_parser_1.default.raw({ type: "application
     console.log(`Webhook with an ID of ${id} and type of ${eventType}`);
     console.log("Webhook body:", evt.data);
     return res.status(200).json({ success: true, message: "Webhook received" });
-});
+};
+exports.webhookHandler = webhookHandler;
 //# sourceMappingURL=webhookHandler.js.map
