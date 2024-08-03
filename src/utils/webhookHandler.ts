@@ -25,7 +25,7 @@ export const webhookHandler = async (req: Request, res: Response) => {
 
   let evt: any;
   try {
-    evt = wh.verify(payload, {
+    evt = wh.verify(payload.toString(), {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
@@ -36,7 +36,7 @@ export const webhookHandler = async (req: Request, res: Response) => {
   }
 
   const { id, email_addresses, first_name, last_name, image_url } = evt.data;
-  const email = email_addresses[0].email_address;
+  const email = email_addresses[0].email_address; // Adjust according to your event data structure
   const eventType = evt.type;
 
   if (eventType === "user.created") {
